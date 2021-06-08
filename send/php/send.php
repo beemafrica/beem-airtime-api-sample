@@ -1,34 +1,38 @@
-
 <?php
 
-$url="http://api.airtime.bongolive.co.tz/airtime/transfer";
-$token="{API_TOKEN}"
+$url="https://apiairtime.beem.africa/v1/transfer";
 
- $headers = array(
-     'Content-Type:application/json',
-     'Authorization: Bearer '.$token
- );
+$api_key='<api_key>';
+$secret_key = '<secret_key>';
 
-$dest_addr="{NUMBER}";
-$amount ={AMOUNT};
-$body = array("dest_addr"=>$dest_addr,"amount"=>$amount);
-$body = json_encode($body);
-$body = preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:',$body);
+$dest_addr="<dest_addr>";
+$amount ="<amount>";
+$ref ="<reference_id>";
+$body = array('dest_addr'=>$dest_addr,'amount'=>$amount, 'reference_id'=>$ref);
 
 $ch = curl_init($url);
+$option = array(
+    CURLOPT_POST => TRUE,
+    CURLOPT_RETURNTRANSFER => TRUE,
+    CURLOPT_HTTPHEADER => array(
+        'Authorization:Basic ' . base64_encode("$api_key:$secret_key"),
+        'Content-Type: application/json'
+    ),
+    CURLOPT_POSTFIELDS => json_encode($body));
 
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-curl_setopt($ch,CURLOP_POSTFIELDS,$body);
-curl_setopt($ch, CURLOPT_HEADER, 1);
-curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+curl_setopt_array($ch,$option);
 
-$output = curl_exec($ch);
-
+$response = curl_exec($ch);
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
 
-//print response
-var_dump($output);
+// Check for errors
+if($response === FALSE){
+        echo $response;
 
-?>
+    die(curl_error($ch));
+}
+var_dump($response);

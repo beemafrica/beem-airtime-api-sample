@@ -1,20 +1,26 @@
-
 const axios = require("axios");
-const url = "https://api.airtime.bongolive.co.tz/airtime/transfer";
+const https = require("https");
+const btoa = require("btoa");
+
+const api_key = "<api_key>";
+const secret_key = "<secret_key>";
+
+const url = "https://apiairtime.beem.africa/v1/transfer";
 
 const payload = {
-    dest_addr: {NUMBER},
-     amount: {AMOUNT}
+     dest_addr: "<dest_addr>",
+     amount: "<amount>",
+     reference_id: "<reference_id>"
  };
-const token = ""
-function send(){
-axios.post(url, payload,{
+
+axios.post(url, payload, {
          headers: {
              "content-type": "application/json",
-              authorization: "bearer " + token
-         }
+              "Authorization": "Basic " + btoa(api_key + ":" + secret_key),
+         },
+           httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
      })
      .then(resp => console.log(resp.data))
      .catch(err => console.log(err.message));
-    }
-    send();
